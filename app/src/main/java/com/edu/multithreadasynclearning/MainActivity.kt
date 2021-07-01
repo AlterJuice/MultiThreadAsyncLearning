@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             Observable.interval(0, 1, TimeUnit.MILLISECONDS)
                 .subscribe {
                     runOnUiThread {
-                        binding.circle.updateAngle(((it * 0.006f) % 360).toLong())
+                        binding.circle.updateAngle((it * 0.006f) % 360)
                         binding.millisecondsText.text = it.toString()
                     }
                 }

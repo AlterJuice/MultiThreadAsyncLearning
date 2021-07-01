@@ -16,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:size="20dp"
+            app:strokeSize="10"
             tools:angle="340"/>
+
         <TextView
             android:layout_gravity="center"
             android:id="@+id/millisecondsText"

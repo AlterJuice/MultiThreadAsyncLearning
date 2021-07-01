@@ -12,7 +12,6 @@ class CircleAnimation(
 
     override fun applyTransformation(interpolatedTime: Float, transformation: Transformation) {
         val angle = oldAngle + (newAngle - oldAngle) * interpolatedTime
-        circleView.angle = angle
-        circleView.requestLayout()
+        circleView.updateAngle(angle)
     }
 }
