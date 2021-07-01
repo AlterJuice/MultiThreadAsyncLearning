@@ -5,81 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <FrameLayout
-        android:layout_centerHorizontal="true"
+        android:id="@+id/frameCircle"
         android:layout_width="200dp"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="10dp">
 
         <com.edu.multithreadasynclearning.CircleView
-            android:layout_gravity="center"
             android:id="@+id/circle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             app:size="20dp"
             app:strokeSize="10"
-            tools:angle="340"/>
+            tools:angle="340" />
 
         <TextView
-            android:layout_gravity="center"
             android:id="@+id/millisecondsText"
+            style="@style/mainActivityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            tools:text="54, 783ms"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center"
+            tools:text="54, 783ms" />
 
     </FrameLayout>
 
+
+    <TextView
+        android:id="@+id/randomInteger"
+        style="@style/mainActivityTextView"
+        android:layout_below="@id/frameCircle"
+        android:layout_alignEnd="@id/dividerCenter"
+        android:layout_alignParentStart="true"
+        android:text="Random integer: " />
+
+    <TextView
+        android:id="@+id/randomIntegerValue"
+        style="@style/mainActivityTextView"
+        android:layout_alignTop="@id/randomInteger"
+        android:layout_toEndOf="@id/randomInteger"
+        tools:text="72" />
+
     <TextView
         android:id="@+id/buttonResume"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_width="wrap_content"
-        android:text="Resume"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="22sp"
+        style="@style/mainActivityTextView"
         android:layout_alignEnd="@id/dividerCenter"
-        android:layout_height="60dp"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:text="Resume" />
+
     <View
+
         android:id="@+id/dividerCenter"
         android:layout_width="1dp"
-        android:background="@android:color/darker_gray"
         android:layout_height="30dp"
-        android:layout_marginVertical="10dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        />
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="10dp"
+        android:background="@android:color/darker_gray" />
 
     <TextView
         android:id="@+id/buttonPause"
-        android:layout_alignParentBottom="true"
+        style="@style/mainActivityTextView"
         android:layout_alignStart="@id/dividerCenter"
         android:layout_alignParentEnd="true"
-        android:text="Stop"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_width="100dp"
-        android:layout_height="60dp"/>
+        android:layout_alignParentBottom="true"
+        android:text="Stop" />
 
-
-
-
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/secondsText"
-        android:layout_width="163dp"
-        android:layout_height="88dp"
-        android:gravity="center"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="201dp" />
 
 </RelativeLayout>
