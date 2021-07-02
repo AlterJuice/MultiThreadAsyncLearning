@@ -14,18 +14,20 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.time.LocalTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val liveInteger: MutableLiveData<Long> = MutableLiveData()
+    private val liveInteger: MutableLiveData<Int> = MutableLiveData()
 
     private var thread: Thread? = null
     private var job: Job? = null
 
     private var disposableTime: Disposable? = null
+    private val randomIntList = LinkedList<Int>()
 
 
     /*
@@ -54,6 +56,10 @@ class MainActivity : AppCompatActivity() {
         startThread()
         startRxFlowable()
         startJobCoroutines()
+        binding.buttonShowIntList.setOnClickListener {
+
+
+        }
     }
 
 
@@ -67,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         job = MainScope().launch {
             coroutine().collect {
                 withContext(Dispatchers.Main) {
+                    randomIntList.add(it.toInt())
                     binding.randomIntegerCoroutinesValue.text = it.toString()
 //                    liveInteger.value = it
                 }
@@ -90,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             .subscribe({
                 binding.circle.updateAngle((it * 0.006f) % 360)
                 binding.millisecondsText.text = getFactTimeFormatted3parts(it / 1000 )
-                binding.observableTimeValue.text = it.toString() 
+                binding.observableTimeValue.text = it.toString()
                 // binding.millisecondsText.text = it.toString()
 
             }, {
@@ -102,7 +109,7 @@ class MainActivity : AppCompatActivity() {
     private fun createThread(): Thread {
         val t = Thread {
             while (thread?.isInterrupted != true) {
-                liveInteger.postValue(getRandomInteger(-1000, 1000))
+                liveInteger.postValue(getRandomIntAndAddToList(-1000, 1000))
                 Thread.sleep(3000)
             }
         }
@@ -110,11 +117,20 @@ class MainActivity : AppCompatActivity() {
         return t
 
     }
+    private fun getRandomIntAndAddToList(intMin: Int, intMax: Int): Int{
+        val integer = getRandomInteger(intMin, intMax)
+        randomIntList.add(0, integer)
+        updateUIList()
+        return integer
+    }
+    private fun updateUIList(){
+        binding.listIntegers.text = randomIntList.toString()
+    }
 
-    private fun coroutine() = flow<Long> {
+    private fun coroutine() = flow<Int> {
         repeat(1000){
             delay(1000)
-            emit(getRandomInteger(0, 30_000))
+            emit(getRandomIntAndAddToList(0, 30_000))
         }
     }
 
@@ -134,7 +150,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun getRandomInteger(intMin: Int, intMax: Int): Long {
-        return (Random.nextInt((intMax - intMin) + 1) + intMin).toLong()
+    private fun getRandomInteger(intMin: Int, intMax: Int): Int {
+        return (Random.nextInt((intMax - intMin) + 1) + intMin)
     }
+
 }
