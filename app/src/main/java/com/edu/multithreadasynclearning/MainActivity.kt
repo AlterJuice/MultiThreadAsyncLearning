@@ -2,6 +2,7 @@ package com.edu.multithreadasynclearning
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.edu.multithreadasynclearning.databinding.ActivityMainBinding
@@ -27,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private var job: Job? = null
 
     private var disposableTime: Disposable? = null
-    private val randomIntList = LinkedList<Int>()
 
 
     /*
@@ -51,17 +51,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.recyclerIntList.adapter = Adapter()
 
         attachLiveDataObserver()
-        startThread()
         startRxFlowable()
+
+        // startThread()
         startJobCoroutines()
-        binding.buttonShowIntList.setOnClickListener {
-
-
-        }
     }
-
 
     private fun attachLiveDataObserver() {
         liveInteger.observe(this, {
@@ -73,7 +70,6 @@ class MainActivity : AppCompatActivity() {
         job = MainScope().launch {
             coroutine().collect {
                 withContext(Dispatchers.Main) {
-                    randomIntList.add(it.toInt())
                     binding.randomIntegerCoroutinesValue.text = it.toString()
 //                    liveInteger.value = it
                 }
@@ -89,14 +85,13 @@ class MainActivity : AppCompatActivity() {
         // Main process callbacks are onNext and onError in subscribe
 
         disposableTime = Flowable.interval(0, 1, TimeUnit.MILLISECONDS)
-//        disposableTime = Observable.interval(0, 1, TimeUnit.MILLISECONDS)
             .onBackpressureDrop()
             .onErrorReturn { -1 }
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 binding.circle.updateAngle((it * 0.006f) % 360)
-                binding.millisecondsText.text = getFactTimeFormatted3parts(it / 1000 )
+                binding.millisecondsText.text = getFactTimeFormatted3parts(it / 1000)
                 binding.observableTimeValue.text = it.toString()
                 // binding.millisecondsText.text = it.toString()
 
@@ -109,7 +104,9 @@ class MainActivity : AppCompatActivity() {
     private fun createThread(): Thread {
         val t = Thread {
             while (thread?.isInterrupted != true) {
-                liveInteger.postValue(getRandomIntAndAddToList(-1000, 1000))
+                runOnUiThread {
+                    liveInteger.postValue(getRandomIntAndAddToList(-1000, 1000))
+                }
                 Thread.sleep(3000)
             }
         }
@@ -117,21 +114,18 @@ class MainActivity : AppCompatActivity() {
         return t
 
     }
-    private fun getRandomIntAndAddToList(intMin: Int, intMax: Int): Int{
-        val integer = getRandomInteger(intMin, intMax)
-        randomIntList.add(0, integer)
-        updateUIList()
-        return integer
-    }
-    private fun updateUIList(){
-        binding.listIntegers.text = randomIntList.toString()
-    }
 
     private fun coroutine() = flow<Int> {
-        repeat(1000){
+        repeat(1000) {
             delay(1000)
             emit(getRandomIntAndAddToList(0, 30_000))
         }
+    }
+
+    private fun getRandomIntAndAddToList(intMin: Int, intMax: Int): Int {
+        val integer = getRandomInteger(intMin, intMax)
+        (binding.recyclerIntList.adapter as Adapter).addItem(integer.toString())
+        return integer
     }
 
     override fun onDestroy() {
@@ -140,7 +134,6 @@ class MainActivity : AppCompatActivity() {
         disposableTime?.dispose()
         job?.cancel()
         Log.d("OnDestroy", "Thread, disposableTime and job destroyed")
-
     }
 
 
@@ -148,7 +141,6 @@ class MainActivity : AppCompatActivity() {
         val formatted = LocalTime.ofSecondOfDay(factTime).toString()
         return if (formatted.startsWith("00:")) formatted.substring(3) else formatted
     }
-
 
     private fun getRandomInteger(intMin: Int, intMax: Int): Int {
         return (Random.nextInt((intMax - intMin) + 1) + intMin)

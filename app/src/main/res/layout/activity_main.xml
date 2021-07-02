@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -19,17 +20,16 @@
                 android:id="@+id/observableTitle"
                 style="@style/mainActivityTextView"
                 android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
-                android:text="Observable/Flowable Interval"
                 android:layout_alignParentTop="true"
-                />
+                android:layout_centerHorizontal="true"
+                android:text="Observable/Flowable Interval" />
 
             <FrameLayout
-                android:layout_below="@id/observableTitle"
                 android:id="@+id/frameCircle"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:layout_below="@id/observableTitle"
                 android:layout_centerHorizontal="true"
                 android:layout_marginVertical="10dp">
 
@@ -51,6 +51,8 @@
                     tools:text="54, 783ms" />
 
             </FrameLayout>
+
+
 
             <TextView
                 android:id="@+id/observableTime"
@@ -101,53 +103,25 @@
                 android:layout_toEndOf="@id/randomIntegerCoroutines"
                 tools:text="36" />
 
-            <TextView
-                android:layout_below="@id/randomIntegerCoroutines"
-                android:id="@+id/buttonShowIntList"
-                style="@style/mainActivityTextView"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-
-                android:text="Show integer list"
-                android:background="@android:color/holo_blue_light"
-                />
-
-            <TextView
-                android:layout_below="@id/buttonShowIntList"
-                android:id="@+id/buttonResume"
-                style="@style/mainActivityTextView"
-                android:layout_alignEnd="@id/dividerCenter"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:text="Resume" />
 
             <View
-
                 android:id="@+id/dividerCenter"
-                android:layout_width="1dp"
-                android:layout_height="30dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginVertical="10dp"
                 android:background="@android:color/darker_gray" />
-
-            <TextView
-                android:id="@+id/buttonPause"
-
-                style="@style/mainActivityTextView"
-                android:layout_alignStart="@id/dividerCenter"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:text="Stop" />
 
 
         </RelativeLayout>
-        <TextView
-            android:id="@+id/listIntegers"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerIntList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/mainActivityTextView"
-            tools:text="[1,2,3,4,5]"
-            />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/recycler_list_item" />
+
     </LinearLayout>
 </ScrollView>
