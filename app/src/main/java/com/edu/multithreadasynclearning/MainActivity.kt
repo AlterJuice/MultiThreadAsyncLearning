@@ -81,16 +81,10 @@ class MainActivity : AppCompatActivity() {
     private fun startRxFlowable() {
         // Main process callbacks are onNext and onError in subscribe
 
-        // Проблема с Flowable: с методом .onBackpressureDrop() анимация и текст
-        // меняется раз в 3 секунды (рывками) и переодически вылетает значение из ErrorReturn блока.
-        // Без .onBackpressureDrop() интерфейс не обновляется
-
-        disposableTime = Observable.interval(0, 1, TimeUnit.MILLISECONDS)
-            .onErrorReturn {
-                -1
-            }
-            // .onBackpressureDrop()
-            .delay(5, TimeUnit.SECONDS)
+        disposableTime = Flowable.interval(0, 1, TimeUnit.MILLISECONDS)
+//        disposableTime = Observable.interval(0, 1, TimeUnit.MILLISECONDS)
+            .onBackpressureDrop()
+            .onErrorReturn { -1 }
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
