@@ -12,8 +12,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import java.time.LocalTime
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -24,10 +23,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val liveInteger: MutableLiveData<Int> = MutableLiveData()
 
+    private val _state = MutableStateFlow(1)
+    val state: StateFlow<Int> = _state
+    val sharedFlow: SharedFlow<Int> = MutableSharedFlow()
+
     private var thread: Thread? = null
     private var job: Job? = null
 
     private var disposableTime: Disposable? = null
+
+    /////////////  async, sharedFlow, stateFlow, flow operators
 
 
     /*
@@ -67,6 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startJobCoroutines() {
+        Log.d("+++++ Worker", "Attaching startJobCoroutines")
         job = MainScope().launch {
             coroutine().collect {
                 withContext(Dispatchers.Main) {
@@ -74,16 +80,29 @@ class MainActivity : AppCompatActivity() {
 //                    liveInteger.value = it
                 }
             }
+
+            val r = async {
+                delay(20000)
+                4
+            }
+
+            val r1 = async {
+                delay(200000)
+                5
+            }
+            r.await()
+            r1.await()
         }
     }
 
     private fun startThread() {
+         Log.d("+++++ Worker", "Attaching Thread Working")
         thread = createThread()
     }
 
     private fun startRxFlowable() {
         // Main process callbacks are onNext and onError in subscribe
-
+        Log.d("+++++ Worker", "Attaching Flowable Working")
         disposableTime = Flowable.interval(0, 1, TimeUnit.MILLISECONDS)
             .onBackpressureDrop()
             .onErrorReturn { -1 }
@@ -120,7 +139,7 @@ class MainActivity : AppCompatActivity() {
             delay(1000)
             emit(getRandomIntAndAddToList(0, 30_000))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     private fun getRandomIntAndAddToList(intMin: Int, intMax: Int): Int {
         val integer = getRandomInteger(intMin, intMax)
