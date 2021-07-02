@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
-        android:text="Observable Interval"
+        android:text="Observable/Flowable Interval"
         android:layout_alignParentTop="true"
         />
 
@@ -43,11 +43,27 @@
 
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/observableTime"
+        style="@style/mainActivityTextView"
+        android:layout_below="@id/frameCircle"
+        android:layout_alignEnd="@id/dividerCenter"
+        android:layout_alignParentStart="true"
+        android:text="Time Value observable: " />
+
+    <TextView
+        android:id="@+id/observableTimeValue"
+        style="@style/mainActivityTextView"
+        android:layout_width="match_parent"
+        android:layout_alignTop="@id/observableTime"
+        android:layout_toEndOf="@id/observableTime"
+        tools:text="54, 783ms" />
+
 
     <TextView
         android:id="@+id/randomIntegerThread"
         style="@style/mainActivityTextView"
-        android:layout_below="@id/frameCircle"
+        android:layout_below="@id/observableTime"
         android:layout_alignEnd="@id/dividerCenter"
         android:layout_alignParentStart="true"
         android:text="Random integer Thread: " />

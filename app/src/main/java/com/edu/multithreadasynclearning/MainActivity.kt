@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             .subscribe({
                 binding.circle.updateAngle((it * 0.006f) % 360)
                 binding.millisecondsText.text = getFactTimeFormatted3parts(it / 1000 )
+                binding.observableTimeValue.text = it.toString() 
                 // binding.millisecondsText.text = it.toString()
 
             }, {
