@@ -11,26 +11,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
+            android:paddingHorizontal="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MainActivity">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/observableTitle"
                 style="@style/mainActivityTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
                 android:text="Observable/Flowable Interval" />
 
             <FrameLayout
                 android:id="@+id/frameCircle"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_below="@id/observableTitle"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
                 android:layout_marginVertical="10dp">
 
                 <com.edu.multithreadasynclearning.CircleView
@@ -52,68 +51,63 @@
 
             </FrameLayout>
 
-
-
-            <TextView
-                android:id="@+id/observableTime"
-                style="@style/mainActivityTextView"
-                android:layout_below="@id/frameCircle"
-                android:layout_alignEnd="@id/dividerCenter"
-                android:layout_alignParentStart="true"
-                android:text="Time Value observable: " />
-
-            <TextView
-                android:id="@+id/observableTimeValue"
-                style="@style/mainActivityTextView"
+            <LinearLayout
+                android:id="@+id/flowableTime"
                 android:layout_width="match_parent"
-                android:layout_alignTop="@id/observableTime"
-                android:layout_toEndOf="@id/observableTime"
-                tools:text="54, 783ms" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/mainActivityTextView"
+                    android:text="Time Value observable: " />
+
+                <TextView
+                    android:id="@+id/flowableTimeValue"
+                    style="@style/mainActivityTextView"
+                    android:layout_width="match_parent"
+                    tools:text="54, 783ms" />
+
+            </LinearLayout>
 
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/randomIntegerThread"
-                style="@style/mainActivityTextView"
-                android:layout_below="@id/observableTime"
-                android:layout_alignEnd="@id/dividerCenter"
-                android:layout_alignParentStart="true"
-                android:text="Random integer Thread: " />
-
-            <TextView
-                android:id="@+id/randomIntegerThreadValue"
-                style="@style/mainActivityTextView"
                 android:layout_width="match_parent"
-                android:layout_alignTop="@id/randomIntegerThread"
-                android:layout_toEndOf="@id/randomIntegerThread"
-                tools:text="72" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
+                <TextView
+                    style="@style/mainActivityTextView"
+                    android:text="Random integer Thread: " />
+
+                <TextView
+                    android:id="@+id/randomIntegerThreadValue"
+                    style="@style/mainActivityTextView"
+                    android:layout_width="match_parent"
+                    tools:text="72" />
+            </LinearLayout>
+
+
+            <LinearLayout
+
                 android:id="@+id/randomIntegerCoroutines"
-                style="@style/mainActivityTextView"
-                android:layout_below="@id/randomIntegerThread"
-                android:layout_alignEnd="@id/dividerCenter"
-                android:layout_alignParentStart="true"
-                android:text="Random integer Coroutines: " />
-
-            <TextView
-                android:id="@+id/randomIntegerCoroutinesValue"
-                style="@style/mainActivityTextView"
                 android:layout_width="match_parent"
-                android:layout_alignTop="@id/randomIntegerCoroutines"
-                android:layout_toEndOf="@id/randomIntegerCoroutines"
-                tools:text="36" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/mainActivityTextView"
+                    android:text="Random integer Coroutines: " />
+
+                <TextView
+                    android:id="@+id/randomIntegerCoroutinesValue"
+                    style="@style/mainActivityTextView"
+                    android:layout_width="match_parent"
+                    tools:text="36" />
+            </LinearLayout>
 
 
-            <View
-                android:id="@+id/dividerCenter"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:background="@android:color/darker_gray" />
-
-
-        </RelativeLayout>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerIntList"

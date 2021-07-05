@@ -8,13 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import com.edu.multithreadasynclearning.databinding.ActivityMainBinding
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.time.LocalTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -23,16 +21,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val liveInteger: MutableLiveData<Int> = MutableLiveData()
 
-    private val _state = MutableStateFlow(1)
-    val state: StateFlow<Int> = _state
-    val sharedFlow: SharedFlow<Int> = MutableSharedFlow()
+    // private val _state = MutableStateFlow(1)
+    // val state: StateFlow<Int> = _state
+    // val _sharedIntFlow: MutableSharedFlow<Int> = MutableSharedFlow()
+    // val sharedIntFlow = _sharedIntFlow.asSharedFlow()
 
     private var thread: Thread? = null
     private var job: Job? = null
 
     private var disposableTime: Disposable? = null
+    // private var job2: Job? = null
 
-    /////////////  async, sharedFlow, stateFlow, flow operators
+    //  async, sharedFlow, stateFlow, flow operators
 
 
     /*
@@ -59,10 +59,17 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerIntList.adapter = Adapter()
 
         attachLiveDataObserver()
-        startRxFlowable()
+        hideSomeUI()
 
-        // startThread()
+        startRxFlowable()
+        startThread()
         startJobCoroutines()
+    }
+
+    private fun hideSomeUI() {
+        binding.flowableTime.visibility = View.GONE
+        binding.randomIntegerThread.visibility = View.GONE
+        binding.randomIntegerCoroutines.visibility = View.GONE
     }
 
     private fun attachLiveDataObserver() {
@@ -72,37 +79,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startJobCoroutines() {
-        Log.d("+++++ Worker", "Attaching startJobCoroutines")
+        binding.randomIntegerCoroutines.visibility = View.VISIBLE
         job = MainScope().launch {
             coroutine().collect {
                 withContext(Dispatchers.Main) {
                     binding.randomIntegerCoroutinesValue.text = it.toString()
-//                    liveInteger.value = it
+                    // liveInteger.value = it
                 }
             }
-
-            val r = async {
-                delay(20000)
-                4
-            }
-
-            val r1 = async {
-                delay(200000)
-                5
-            }
-            r.await()
-            r1.await()
         }
+
+        // val job2 = MainScope().launch {
+        //     val startDate = Date().time
+        //     Log.d("CurrentTime", Date().time.toString())
+        //     val testAsync1 = async {
+        //         delay(20000)
+        //         Log.d   ("Async", "Log_In_testAsync1")
+        //         4
+        //     }
+        //     Log.d   ("Async", "Log_out_of_testAsync1")
+        //     testAsync1.await()
+        //     val testAsync2 = async {
+        //         delay(10000)
+        //         Log.d   ("Async", "Async test+${testAsync1.await()}")
+        //         5
+        //     }
+        //     Log.d   ("r2Awaited", "Async test ${testAsync2.await()}")
+        //     val endDate = Date().time
+        //     Log.d("WorkedFor", ((endDate-startDate)/1000).toString() + "Seconds")
+        // }
+
     }
 
     private fun startThread() {
-         Log.d("+++++ Worker", "Attaching Thread Working")
+        binding.randomIntegerThread.visibility = View.VISIBLE
         thread = createThread()
     }
 
     private fun startRxFlowable() {
+        binding.flowableTime.visibility = View.VISIBLE
         // Main process callbacks are onNext and onError in subscribe
-        Log.d("+++++ Worker", "Attaching Flowable Working")
         disposableTime = Flowable.interval(0, 1, TimeUnit.MILLISECONDS)
             .onBackpressureDrop()
             .onErrorReturn { -1 }
@@ -111,8 +127,7 @@ class MainActivity : AppCompatActivity() {
             .subscribe({
                 binding.circle.updateAngle((it * 0.006f) % 360)
                 binding.millisecondsText.text = getFactTimeFormatted3parts(it / 1000)
-                binding.observableTimeValue.text = it.toString()
-                // binding.millisecondsText.text = it.toString()
+                binding.flowableTimeValue.text = it.toString()
 
             }, {
                 Log.d("An error occurred: ", it.toString())
@@ -123,9 +138,7 @@ class MainActivity : AppCompatActivity() {
     private fun createThread(): Thread {
         val t = Thread {
             while (thread?.isInterrupted != true) {
-                runOnUiThread {
-                    liveInteger.postValue(getRandomIntAndAddToList(-1000, 1000))
-                }
+                liveInteger.postValue(getRandomIntAndAddToList(-1000, 1000))
                 Thread.sleep(3000)
             }
         }
@@ -139,12 +152,20 @@ class MainActivity : AppCompatActivity() {
             delay(1000)
             emit(getRandomIntAndAddToList(0, 30_000))
         }
-    }.flowOn(Dispatchers.IO)
+    }
+
 
     private fun getRandomIntAndAddToList(intMin: Int, intMax: Int): Int {
         val integer = getRandomInteger(intMin, intMax)
-        (binding.recyclerIntList.adapter as Adapter).addItem(integer.toString())
+        runOnUiThread {
+            addToList(integer)
+        }
         return integer
+    }
+
+    private fun addToList(int: Int) {
+        (binding.recyclerIntList.adapter as Adapter).addItem(int.toString())
+
     }
 
     override fun onDestroy() {
@@ -152,6 +173,7 @@ class MainActivity : AppCompatActivity() {
         thread?.interrupt()
         disposableTime?.dispose()
         job?.cancel()
+        // job2?.cancel()
         Log.d("OnDestroy", "Thread, disposableTime and job destroyed")
     }
 
